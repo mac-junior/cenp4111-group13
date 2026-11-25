@@ -15,3 +15,7 @@ generates **quadruples** (three-address code) and evaluates them.
 **Implementation track:** Hand-written scanner → shunting-yard → postfix → quadruples → codegen
 
 ## Language
+x =  = 10 + y * 2;
+print x;
+
+./compiler tests/sample1.rpn
