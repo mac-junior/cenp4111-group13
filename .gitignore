@@ -1,0 +1,12 @@
+# Compiled binaries
+compiler
+scanner
+*.o
+*.exe
+
+# Editor
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
