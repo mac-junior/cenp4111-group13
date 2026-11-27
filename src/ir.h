@@ -3,11 +3,30 @@
 
 #include "ast.h"
 
-/* Print the postfix (Reverse Polish) form of an expression tree. */
+/* One quadruple: (op, arg1, arg2, result) */
+typedef struct {
+    char *op;
+    char *arg1;
+    char *arg2;
+    char *result;
+} Quad;
+
+#define MAX_QUADS 1024
+
+/* The global quadruple list */
+extern Quad quads[MAX_QUADS];
+extern int  quad_count;
+
+/* Postfix (unchanged) */
 void emit_postfix(ASTNode *expr);
 
-/* Print three-address-code quadruples for a statement.
- * Returns the number of quadruples emitted. */
+/* Build quadruples from a statement (stores in quads[], returns count) */
 int emit_quadruples(ASTNode *stmt);
+
+/* Print the current quadruple list */
+void print_quads(void);
+
+/* Free all memory used by the quad list */
+void free_quads(void);
 
 #endif

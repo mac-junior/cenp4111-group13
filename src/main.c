@@ -3,6 +3,7 @@
 #include "ast.h"
 #include "parser.h"
 #include "ir.h"
+#include "optimiser.h"
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -10,7 +11,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    /* Read the whole file */
+    /* Read file */
     FILE *f = fopen(argv[1], "rb");
     if (!f) { perror("fopen"); return 1; }
     fseek(f, 0, SEEK_END);
@@ -25,19 +26,24 @@ int main(int argc, char **argv) {
     init_parser(source);
     ASTNode *tree = parse_program();
 
-    /* --- AST --- */
     printf("=== AST ===\n");
     ast_print(tree, 0);
 
-    /* --- Postfix (of the expression inside the statement) --- */
     printf("\n=== POSTFIX ===\n");
-    if (tree->type == AST_ASSIGN)      emit_postfix(tree->right);
-    else if (tree->type == AST_PRINT)  emit_postfix(tree->left);
+    if (tree->type == AST_ASSIGN)     emit_postfix(tree->right);
+    else if (tree->type == AST_PRINT) emit_postfix(tree->left);
 
-    /* --- Quadruples --- */
-    printf("\n=== QUADRUPLES ===\n");
+    printf("\n=== QUADRUPLES (before) ===\n");
     emit_quadruples(tree);
+    print_quads();
 
+    printf("\n=== OPTIMISATION ===\n");
+    optimise_quads();
+
+    printf("\n=== QUADRUPLES (after) ===\n");
+    print_quads();
+
+    free_quads();
     free(source);
     return 0;
 }
