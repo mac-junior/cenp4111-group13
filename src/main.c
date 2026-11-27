@@ -4,6 +4,10 @@
 #include "parser.h"
 #include "ir.h"
 #include "optimiser.h"
+#include "codegen.h"
+
+/* Prototype — codegen.c defines this, not declared in codegen.h (internal) */
+void print_bytecode(void);
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -11,7 +15,6 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    /* Read file */
     FILE *f = fopen(argv[1], "rb");
     if (!f) { perror("fopen"); return 1; }
     fseek(f, 0, SEEK_END);
@@ -22,7 +25,6 @@ int main(int argc, char **argv) {
     source[size] = '\0';
     fclose(f);
 
-    /* Parse */
     init_parser(source);
     ASTNode *tree = parse_program();
 
@@ -42,6 +44,10 @@ int main(int argc, char **argv) {
 
     printf("\n=== QUADRUPLES (after) ===\n");
     print_quads();
+
+    generate_bytecode();
+    print_bytecode();
+    run_bytecode();
 
     free_quads();
     free(source);
