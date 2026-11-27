@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "parser.h"
+#include "semantic.h"
 #include "ir.h"
 #include "optimiser.h"
 #include "codegen.h"
 
-/* Prototype — codegen.c defines this, not declared in codegen.h (internal) */
 void print_bytecode(void);
 
 int main(int argc, char **argv) {
@@ -30,6 +30,14 @@ int main(int argc, char **argv) {
 
     printf("=== AST ===\n");
     ast_print(tree, 0);
+
+    printf("\n=== SEMANTIC CHECK ===\n");
+    if (!check_semantics(tree)) {
+        fprintf(stderr, "Compilation aborted: semantic errors\n");
+        free(source);
+        return 1;
+    }
+    printf("Semantic check passed.\n");
 
     printf("\n=== POSTFIX ===\n");
     if (tree->type == AST_ASSIGN)     emit_postfix(tree->right);
